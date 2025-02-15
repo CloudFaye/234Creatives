@@ -12,6 +12,7 @@ export let data: PageData
 <div class=" col-span-1 h-full ">
   <div class="image w-full h-full  bg-zinc-600">
     hfhhjdhhejh
+    <img class=" object-cover" src="/works1.png" alt="work" >
     
     
    </div>
