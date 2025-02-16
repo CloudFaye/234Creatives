@@ -78,19 +78,3 @@
 }
 
 
-:root {
-  --column: 287px;
-  --margin: 15px;
-  --indent: 10px;
-  --finger: 48px;
-  --header: 120px;
-  --column: 287px;
-  --offset: 287px;
-  --forma_size: 15px;
-  --recta_uppercase_size: 16px;
-  --recta_size: 17px;
-  --logo_size: 30px;
-  --line_height: 16px;
-  --text_line_height: 17px;
-  --logo_line_height: 26px;
-}

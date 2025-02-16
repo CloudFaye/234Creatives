@@ -8,17 +8,16 @@ export let data: PageData
 
 
 <div class=" home   ">
-<div class=" home-inner pt-16 grid grid-cols-1 gap-10 md:grid-cols-1 lg:grid-cols-2 ">
-<div class=" col-span-1 h-full ">
-  <div class="image w-full h-full  bg-zinc-600">
+<div class=" home-inner pt-16 grid grid-rows-2 gap-10 md:grid-rows-1 lg:grid-rows-2 ">
+<div class=" row-span-1 h-[200px]  ">
     hfhhjdhhejh
-    <img class=" object-cover" src="/works1.png" alt="work" >
+
     
     
-   </div>
+   
 </div>
 
-<div class="creative col-span-1 h-full overflow-y-scroll  flex flex-col ">
+<div class="creative row-span-1 h-full overflow-y-scroll sm:overflow-y-clip  flex flex-col ">
 {#each data.pages as creative (creative.id) }
      <div class='py-3  border-b border-zinc-700 '>
        <Creatives name={creative.name} category={creative.category} portfolio={creative.portfolio}   />
@@ -48,8 +47,8 @@ export let data: PageData
 
 
 .home {
-    height: calc(100vh - 50px);
-    min-height: 690px;
+    height: calc(100vh - 10px);
+    min-height: 100%;
     overflow: hidden;
     position: relative;
     text-transform: uppercase;
@@ -60,10 +59,7 @@ export let data: PageData
     
 }
 
-.creative {
-    visibility: hidden;
-    
-}
+
 
 .creative > * {
       visibility: visible;

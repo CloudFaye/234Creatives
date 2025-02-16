@@ -5,7 +5,7 @@
 </script>
 
 <Navbar />
-<main class=" font-roboto text-[14px] bg-[#000000] text-zinc-300  w-full  p-4  ">
+<main class=" font-roboto text-[14px] bg-[#000000] text-zinc-300 h-full  w-full  p-4  ">
 {@render children()}
 </main>
 
