@@ -43,15 +43,15 @@ $effect(() => {
 
 </script>
 
-<div class=" grid grid-row-2 pt-20 px-2 gap-10">
+<div class=" min-h-screen font-normal  uppercase grid grid-row-2 lg:grid-cols-3 pt-20 px-2 gap-10">
 
-<div class=" row-span-1 ">
+<div class=" row-span-1 lg:col-span-1 ">
 	<h1 class='text-white text-[1.3rem] font-semibold '>APPLY</h1>
 	<p class=' '>Welcome to the application form for 234creatives
 		All the fields marked with * are required.</p>
 </div>
 
-<form class='  row-span-1 grid grid-row-1 w-full gap-5 ' use:enhance method="POST">
+<form class=' lg:col-span-2 row-span-1 grid grid-cols-1 sm:grid-cols-2 w-full gap-5 ' use:enhance method="POST">
     <div class="col-span-1 flex flex-col gap-4 ">
       <div class="form-group">
             <label class='flex mb-2' for="name">Full Name *</label>
@@ -106,7 +106,7 @@ $effect(() => {
              <Input class='focus:border-white border-2 text-sm font-sans' type='url' id='works' name='works' bind:value={formData.works} placeholder=" PDF link or drive " />
         </div>
 
-        <Button class='hover:bg-zinc-700 text-white '  type='submit'>Submit Application</Button>
+        <Button class='hover:bg-zinc-700 text-white transition-[height] duration-300 ease-in-out h-[80px] sm:h-[80px] md:h-[140px] lg:h-[180px] '  type='submit'>Submit Application</Button>
     </div>
   
 

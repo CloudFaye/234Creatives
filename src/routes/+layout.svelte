@@ -5,7 +5,26 @@
 </script>
 
 <Navbar />
-<main class=" font-roboto text-[14px] bg-[#000000] text-zinc-300 h-full  w-full  p-4  ">
+<main class=" font-roboto text-[14px] bg-[#000000] text-zinc-300 h-full  w-full max-w-[1440px]  p-4  ">
 {@render children()}
 </main>
 
+<style  >
+	@font-face {
+		font-family: 'Larken' ;
+		font-style: normal ;
+		font-display: swap;
+		font-weight: 100 200 300 400 500 600 700 800 900;
+		src: url($lib/fonts/LarkenVariable-Regular.ttf); format:('ttf')
+	}
+
+	@font-face {
+		font-family: 'Roboto-Mono' ;
+		font-style: normal ;
+		font-display: swap;
+		font-weight: 100 200 300 400 500 600 700 800 900;
+		src: url($lib/fonts/RobotoMono-VariableFont_wght.ttf); format:('ttf')
+	}
+
+
+</style>
