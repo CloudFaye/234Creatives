@@ -23,7 +23,7 @@
 		"@tailwindcss/container-queries": "^0.1.1",
 		"@tailwindcss/typography": "^0.5.16",
 		"autoprefixer": "^10.4.20",
-		"bits-ui": "^1.1.0",
+		"bits-ui": "^1.2.0",
 		"clsx": "^2.1.1",
 		"eslint": "^9.18.0",
 		"eslint-config-prettier": "^10.0.1",
@@ -45,7 +45,6 @@
 	},
 	"dependencies": {
 		"@notionhq/client": "^2.2.15",
-		"dotenv": "^16.4.7",
-		"gsap": "^3.12.7"
+		"dotenv": "^16.4.7"
 	}
 }

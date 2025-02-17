@@ -1,159 +1,163 @@
 <script lang="ts">
     import Creatives from "$lib/components/Creatives.svelte";
-    import { onMount } from "svelte";
+    import { fade, fly, scale } from 'svelte/transition';
+    import { backOut, elasticOut } from 'svelte/easing';
     import type { PageData } from "./$types";
-    import gsap from "gsap";
+    import { onDestroy } from "svelte";
+	import Filters from "$lib/components/Filters.svelte";
     
-    export let data: PageData;
-    let activeName: string | null = null;
-    let nameContainer: HTMLDivElement;
-    let currentCreative: any = null;
-    let activeImage: string | null = null;
-    let allImages: string[] = [];
-    let currentIndex = 0;
-    let intervalId: NodeJS.Timeout | undefined;
-    let isHovered = false;
-    let imageContainer: HTMLDivElement;
+    const { data } = $props<{ data: PageData }>();
 
-    onMount(() => {
+    let activeImage = $state<string | null>(null);
+    let activeName = $state<string | null>(null);
+    let isHovered = $state(false);
+    let currentIndex = $state(0);
+    let allImages = $state<string[]>([]);
+    let filteredPages = $state(data.pages);
+    let selectedServices = $state<string[]>([]);
+
+    // Initialize images
+    $effect(() => {
         allImages = data.pages
-            .flatMap(page => page.worksMedia)
-            .filter(media => media?.external)
-            .map(media => media.external.url);
-
+            .flatMap((page: { worksMedia: any; }) => page.worksMedia)
+            .filter((media: { external: any; }) => media?.external)
+            .map((media: { external: { url: any; }; }) => media.external.url);
+        
         startSlideshow();
-
-        return () => {
-            if (intervalId) clearInterval(intervalId);
-        }
     });
 
-    // Update the animateImage function to handle transitions more smoothly
-    function animateImage(url: string, creative?: any) {
-        // Kill any existing animations to prevent overlap
-        gsap.killTweensOf([imageContainer, nameContainer]);
-        
-        const timeline = gsap.timeline({
-            defaults: { ease: "power2.inOut" }
-        });
-
-        // Only animate if we have new content
-        if (url !== activeImage || creative?.name !== activeName) {
-            timeline
-                .to([imageContainer, nameContainer], {
-                    opacity: 0,
-                    duration: 0.4,
-                    onComplete: () => {
-                        activeImage = url;
-                        activeName = creative?.name || findCreativeNameByImage(url);
-                        currentCreative = creative;
-                    }
-                })
-                .to(imageContainer, {
-                    opacity: 1,
-                    duration: 0.4
-                })
-                .fromTo(nameContainer, 
-                    { y: 20, opacity: 0 },
-                    { y: 0, opacity: 1, duration: 0.3, ease: "back.out(1.7)" },
-                    "-=0.2"
-                );
-        }
-    }
-
     function findCreativeNameByImage(url: string): string {
-        const creative = data.pages.find(page => 
-            page.worksMedia?.some(media => media?.external?.url === url)
+        const creative = data.pages.find((page: { worksMedia: any[]; }) => 
+            page.worksMedia?.some((media: { external: { url: string; }; }) => media?.external?.url === url)
         );
         return creative?.name || '';
     }
 
+    let intervalId: NodeJS.Timeout;
     function startSlideshow() {
-        if (intervalId) clearInterval(intervalId);
+        clearInterval(intervalId);
         
         intervalId = setInterval(() => {
-            if (!isHovered) { 
-                const nextIndex = (currentIndex + 1) % allImages.length;
-                const nextCreative = data.pages.find(page => 
-                    page.worksMedia?.some(media => media?.external?.url === allImages[nextIndex])
+            if (!isHovered) {
+                currentIndex = (currentIndex + 1) % allImages.length;
+                const nextCreative = data.pages.find((page: { worksMedia: any[]; }) => 
+                    page.worksMedia?.some((media: { external: { url: string; }; }) => media?.external?.url === allImages[currentIndex])
                 );
-                currentIndex = nextIndex;
-                animateImage(allImages[nextIndex], nextCreative);
+                activeImage = allImages[currentIndex];
+                activeName = nextCreative?.name || findCreativeNameByImage(allImages[currentIndex]);
             }
-        }, 5000); // Increased duration for smoother experience
+        }, 5000);
     }
 
-    // Update handleImageHover to prevent unnecessary transitions
     function handleImageHover(creative: any) {
         isHovered = true;
-        const hasImage = creative.worksMedia?.[0]?.external?.url;
-        
-        if (hasImage) {
-            // Only animate if it's a different image
-            if (creative.worksMedia[0].external.url !== activeImage) {
-                animateImage(creative.worksMedia[0].external.url, creative);
-            }
+        if (creative.worksMedia?.[0]?.external?.url) {
+            activeImage = creative.worksMedia[0].external.url;
+            activeName = creative.name;
         } else {
-            // Kill any existing animations
-            gsap.killTweensOf([imageContainer, nameContainer]);
-            gsap.to([imageContainer, nameContainer], {
-                opacity: 0,
-                duration: 0.4,
-                onComplete: () => {
-                    activeImage = null;
-                    activeName = null;
-                    currentCreative = null;
-                }
-            });
+            activeImage = null;
+            activeName = null;
         }
     }
 
-    // Update handleMouseLeave to be more efficient
     function handleMouseLeave() {
         isHovered = false;
         if (allImages.length && currentIndex < allImages.length) {
-            const currentCreative = data.pages.find(page => 
-                page.worksMedia?.some(media => media?.external?.url === allImages[currentIndex])
+            const currentCreative = data.pages.find((page: { worksMedia: any[]; }) => 
+                page.worksMedia?.some((media: { external: { url: string; }; }) => media?.external?.url === allImages[currentIndex])
             );
-            // Only animate if we're showing a different image
-            if (allImages[currentIndex] !== activeImage) {
-                animateImage(allImages[currentIndex], currentCreative);
-            }
+            activeImage = allImages[currentIndex];
+            activeName = currentCreative?.name || findCreativeNameByImage(allImages[currentIndex]);
         }
     }
+
+    function handleFilterUpdate(event: CustomEvent<{selectedServices: string[]}>) {
+        selectedServices = event.detail.selectedServices;
+        
+        if (selectedServices.length === 0) {
+            filteredPages = data.pages;
+        } else {
+            filteredPages = data.pages.filter((page: PageData) => 
+                selectedServices.every(service => 
+                    page.services.some(s => s.name === service)
+                )
+            );
+        }
+    }
+
+    onDestroy(() => {
+        clearInterval(intervalId);
+    });
+
+    // Add transition settings
+    const imageTransition = {
+        duration: 800,
+        opacity: 0,
+        scale: 1.05,
+        easing: backOut
+    };
+
+    const nameTransition = {
+        y: 30,
+        duration: 600,
+        opacity: 0,
+        easing: fade
+    };
 </script>
 
 <div class="home">
     <div class="home-inner pt-16 grid gap-10 md:grid-rows-1 lg:grid-cols-2">
         <div class="image-container relative lg:col-span-1 row-span-1 w-full min-h-[200px]">
-            <div 
-                class="image w-full h-full"
-                bind:this={imageContainer}
-            >
+            {#key activeImage}
                 {#if activeImage}
-                    <img
-                        src={activeImage}
-                        alt={`Work by ${activeName}`}
-                        class="w-full h-[250px] lg:h-full md:h-full object-cover"
-                    />
+                    <div 
+                        class="image-wrapper"
+                        in:scale={imageTransition}
+                        out:fade={{ duration: 400 }}
+                    >
+                        <img
+                            src={activeImage}
+                            alt={`Work by ${activeName}`}
+                            class="w-full h-[250px] lg:h-full md:h-full object-cover"
+                        />
+                    </div>
                 {/if}
-            </div>
-            {#if activeName}
-                <div 
-                    class="name-bubble"
-                    bind:this={nameContainer}
-                >
-                    {activeName}
-                </div>
-            {/if}
+            {/key}
+            
+            {#key activeName}
+                {#if activeName && activeImage}
+                    <div 
+                        class="name-bubble"
+                        in:fly={nameTransition}
+                        out:fade={{ duration: 200 }}
+                    >
+                        {activeName}
+                    </div>
+                {/if}
+            {/key}
         </div>
-        <div class="creative row-span-2 h-full  overflow-y-scroll  flex flex-col lg:col-span-1 ">
-            {#each data.pages as creative (creative.id) }
+
+        <div class="creative row-span-2 h-full overflow-y-scroll flex flex-col lg:col-span-1">
+            <Filters 
+                data={data.filteredPages} 
+                filteredCount={filteredPages.length}
+                on:filterUpdate={handleFilterUpdate}
+            />
+            
+            {#each filteredPages as creative (creative.id)}
                 <!-- svelte-ignore a11y_no_static_element_interactions -->
-                <div class='py-3  border-b border-zinc-700' on:mouseenter={() => handleImageHover(creative)}
-                    on:mouseleave={handleMouseLeave} >
-                    <Creatives name={creative.name} category={creative.category} portfolio={creative.portfolio} worksMedia={creative.worksMedia}    />
-                    
+                <!-- svelte-ignore event_directive_deprecated -->
+                <div 
+                    class="py-3 border-b border-zinc-700" 
+                    onmouseenter={() => handleImageHover(creative)}
+                    onmouseleave={handleMouseLeave}
+                >
+                    <Creatives 
+                        name={creative.name} 
+                        category={creative.category} 
+                        portfolio={creative.portfolio} 
+                        worksMedia={creative.worksMedia}
+                    />
                 </div>
             {/each}
         </div>
@@ -161,7 +165,6 @@
 </div>
 
 <style lang="postcss">
-
     .home-inner {
         height: 100%;
         opacity: 1;
@@ -208,8 +211,7 @@
         font-size: 0.75rem;
         font-weight: 400;
         letter-spacing: -0.02em;
-        opacity: 0;
-        transform: translateY(20px);
+        pointer-events: none;
         backdrop-filter: blur(4px);
         -webkit-backdrop-filter: blur(4px);
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);

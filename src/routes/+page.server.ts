@@ -6,13 +6,13 @@ import { getNotionPages } from '$lib/server/notionQuery';
 
 export const load: PageServerLoad = async ({  }) => {
     try {
-        const pages = await getNotionPages();
-        return { pages };
+        const data = await getNotionPages();
+        console.log('Loaded pages count:', data.pages.length);
+        console.log('Available services:', data.services);
+        return data;
     } catch (e) {
-        console.error('Error fetching pages:', e);
-        throw error(500, {
-            message: 'Failed to fetch pages'
-        });
+        console.error('Load function error:', e);
+        return { pages: [], services: [] };
     }
 };
 
