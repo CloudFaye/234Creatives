@@ -6,7 +6,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 	const response = await resolve(event, { 
         preload: ({ type }) => 
         {
-        return type === "font" || type === "js" || type === "css"
+        return type === "font" || type === "js" || type === "css" || type === 'asset'
         } } );
 	return response;
 }; 
