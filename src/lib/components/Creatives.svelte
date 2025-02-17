@@ -32,7 +32,7 @@
 </script>
 
 <div class="cursor-pointer font-roboto uppercase text-[14px] grid grid-cols-6 gap-8 w-full {className}">
-    <div class='text-[20px] font-larken normal-case tracking-normal items-center flex col-span-2'> 
+    <div class='lg:text-[20px] md:text-[18px] text-[1rem] font-larken normal-case tracking-normal items-center flex col-span-2'> 
         {name}
     </div>
 

@@ -143,7 +143,7 @@
                     class="name-bubble"
                     bind:this={nameContainer}
                 >
-                    {activeName}
+                    Creative — {activeName}
                 </div>
             {/if}
         </div>
@@ -200,20 +200,21 @@
     .name-bubble {
         position: absolute;
         bottom: 20px;
-        left: 20px;
+        left: 10px;
         background: rgba(255, 255, 255, 0.817);
         color: black;
-        padding: 0.5rem 1rem;
+        padding: 0.3rem 0.8rem;
         border-radius: 24px;
-        font-size: 0.875rem;
+        font-size: 0.75rem;
         font-weight: 600;
-        letter-spacing: 0.05em;
+        letter-spacing: -0.02em;
         opacity: 0;
         transform: translateY(20px);
         backdrop-filter: blur(4px);
         -webkit-backdrop-filter: blur(4px);
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         z-index: 10;
+        text-transform: none;
     }
 
     .image {
