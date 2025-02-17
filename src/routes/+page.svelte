@@ -1,7 +1,7 @@
 <script lang="ts">
     import Creatives from "$lib/components/Creatives.svelte";
     import { fade, fly, scale } from 'svelte/transition';
-    import { backOut, elasticOut } from 'svelte/easing';
+    import { backOut, cubicInOut, elasticOut } from 'svelte/easing';
     import type { PageData } from "./$types";
     import { onDestroy } from "svelte";
 	import Filters from "$lib/components/Filters.svelte";
@@ -94,14 +94,14 @@
         duration: 800,
         opacity: 0,
         scale: 1.05,
-        easing: backOut
+        easing: cubicInOut
     };
 
     const nameTransition = {
         y: 30,
         duration: 600,
         opacity: 0,
-        easing: fade
+        easing: elasticOut
     };
 </script>
 
@@ -138,11 +138,7 @@
         </div>
 
         <div class="creative row-span-2 h-full overflow-y-scroll flex flex-col lg:col-span-1">
-            <Filters 
-                data={data.filteredPages} 
-                filteredCount={filteredPages.length}
-                on:filterUpdate={handleFilterUpdate}
-            />
+          
             
             {#each filteredPages as creative (creative.id)}
                 <!-- svelte-ignore a11y_no_static_element_interactions -->

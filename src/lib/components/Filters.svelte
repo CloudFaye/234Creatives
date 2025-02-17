@@ -1,9 +1,9 @@
-<script lang='ts'>
-	import { createEventDispatcher } from "svelte";
-	import * as  DropdownMenu  from "./ui/dropdown-menu";
-	import { buttonVariants } from "./ui/button";
-	import ChevronDown from "lucide-svelte/icons/chevron-down";
-	import { Separator } from "./ui/separator";
+<script lang="ts">
+    import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
+    import { ChevronDown } from 'lucide-svelte';
+    import { buttonVariants } from '$lib/components/ui/button';
+    import { Separator } from '$lib/components/ui/separator';
+    import { createEventDispatcher } from 'svelte';
 
     const { data, filteredCount = 0 } = $props<{ 
         data: string[], 
@@ -15,45 +15,50 @@
         filterUpdate: { selectedServices: string[] }
     }>();
 
-    $effect(() => {
+    function handleServiceToggle(service: string) {
+        const index = selectedServices.indexOf(service);
+        if (index === -1) {
+            selectedServices = [...selectedServices, service];
+        } else {
+            selectedServices = selectedServices.filter(s => s !== service);
+        }
         dispatch('filterUpdate', { selectedServices });
-    });
+    }
 </script>
 
 <div class="font-roboto uppercase text-[13px] absolute lg:relative bottom-0 w-full flex flex-col justify-center items-start py-4">
-    <p class="w-full"> Showing {filteredCount} CREATIVES </p>
+    <p class="w-full mb-2">Showing {filteredCount} CREATIVES</p>
     
     <DropdownMenu.Root>
-        <DropdownMenu.Trigger class={buttonVariants({ variant: "outline", size: "sm" })}>
+        <DropdownMenu.Trigger
+            class={buttonVariants({ variant: "outline", size: "sm" })}
+        >
             {selectedServices.length ? `${selectedServices.length} Selected` : 'All Creatives'} 
-            <ChevronDown class='size-3' />
+            <ChevronDown class="size-3 ml-2" />
         </DropdownMenu.Trigger>
         
-        <DropdownMenu.Content class="w-full">
+        <DropdownMenu.Content class="w-56 p-2">
             <DropdownMenu.Group>
-                <DropdownMenu.GroupHeading>Looking for</DropdownMenu.GroupHeading>
-                <DropdownMenu.Separator />
-                <fieldset class='text-black text-balance w-full'>
+                <DropdownMenu.Label class="font-semibold">Looking for</DropdownMenu.Label>
+                <Separator class="my-2" />
+                <div class="max-h-[300px] overflow-y-auto">
                     {#if data.length > 0}
                         {#each data as service}
-                            <label class='flex flex-col text-white my-2 gap-2'>
-                                <div class='flex flex-row w-fit gap-2'>
-                                    <input 
-                                        bind:group={selectedServices}
-                                        class='bg-transparent size-4 text-black rounded-full border-[1px] border-neutral-600'
-                                        type="checkbox"
-                                        name="services"
-                                        value={service}
-                                    />
-                                    <p class='text-black uppercase text-xs'>{service}</p>
-                                </div>
-                                <Separator class='h-[1px] w-full bg-slate-700' />
+                            <label class="flex items-center space-x-2 p-2 hover:bg-zinc-100 rounded-sm cursor-pointer">
+                                <input 
+                                    type="checkbox"
+                                    checked={selectedServices.includes(service)}
+                                    onchange={() => handleServiceToggle(service)}
+                                    value={service}
+                                    class="form-checkbox"
+                                />
+                                <span class="text-sm">{service}</span>
                             </label>
                         {/each}
                     {:else}
-                        <p>No services available</p>
+                        <p class="text-sm text-zinc-500 p-2">No services available</p>
                     {/if}
-                </fieldset>
+                </div>
             </DropdownMenu.Group>
         </DropdownMenu.Content>
     </DropdownMenu.Root>
