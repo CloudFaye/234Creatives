@@ -5,9 +5,16 @@ import { env } from '$env/dynamic/private';
 const notion = new Client({ auth: NOTION_AUTH });
 
 export async function getNotionPages() {
+    // Add filter for Listed property
     const response = await notion.databases.query({
         database_id: NOTION_DB,
-        page_size: 100
+        page_size: 100,
+        filter: {
+            property: 'Listed',
+            select: {
+                equals: 'YES'
+            }
+        }
     });
 
     const pagesPromises = response.results.map(async (page) => {

@@ -11,7 +11,7 @@
         { name: 'POST UP', href: '/apply' }
     ];
 
-    let logo = [{ name: '+234.creatives', href: '/' }];
+    let logo = [{ name: '+234.creatives👾', href: '/' }];
     
     // Accept custom classes through props
     let className = '';
@@ -24,7 +24,7 @@
     );
 
     const navItemClasses = cn(
-        'text-sm font-medium text-zinc-800 lg:text-zinc-300   transition-colors hover:text-zinc-400 lg:hover:animate-bounce ' ,
+        'text-sm font-medium text-zinc-800 lg:text-zinc-300 md:text-zinc-300 sm:text-zinc-300    transition-colors hover:text-zinc-400 lg:hover:animate-bounce ' ,
         navItemClass
     );
 
