@@ -32,11 +32,11 @@
 </script>
 
 <div class="cursor-pointer font-roboto uppercase text-[14px] grid grid-cols-6 gap-8 w-full {className}">
-    <div class='lg:text-[20px] md:text-[18px] text-[1rem] font-larken normal-case tracking-normal items-center flex col-span-2'> 
+    <div class='lg:text-[16px] md:text-[16px] text-[1rem] items-center flex col-span-2'> 
         {name}
     </div>
 
-    <div class='text-lime-600 text-[12px] flex items-center col-span-2'>
+    <div class='text-zinc-400 text-[12px] md:text-[12px] lg:text-[14px] flex items-center justify-start col-span-2'>
         <p>{category}</p>
     </div>
 

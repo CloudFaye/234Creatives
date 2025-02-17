@@ -106,7 +106,7 @@ $effect(() => {
       <div class="form-group">
             <label class='flex mb-2' for="name">Full Name *</label>
               <Input class='focus:border-white border-2 text-sm font-sans' type='text' id='name' name='name' bind:value={formData.name} required placeholder='Your full name' />
-              <label class='flex mt-1 text-sm font-thin' for="">This can be your design gimmick or real name</label>
+              <label class='flex mt-1 text-[12px] text-zinc-600 ' for="">This can be your design gimmick or real name</label>
         </div>
 
         <div class="flex flex-col  gap-2">
