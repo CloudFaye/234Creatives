@@ -32,21 +32,19 @@
 </script>
 
 <div class="cursor-pointer font-roboto uppercase text-[14px] grid grid-cols-6 gap-8 w-full {className}">
-    <div class='items-center flex col-span-3'> 
+    <div class='text-[15px] font-larken items-center flex col-span-2'> 
         {name}
     </div>
 
-    <div class='text-fuchsia-300 flex items-center col-span-2'>
+    <div class='text-lime-600 flex items-center col-span-2'>
         <p>{category}</p>
     </div>
 
-    <div class='items-center justify-end text-right flex col-span-1'>
-        <a href={portfolio} class='text-neutral-600 text-[13px]'>
-            {#each services as service}
-                {service.name}
+    <div class='flex cursor-pointer flex-wrap  items-end justify-end gap-2 col-span-2'>
+        {#each services as service}
+        <span class=" flex flex-col items-center justify-center border-zinc-700 border text-zinc-400 text-[12px] leading-[10px] px-1 py-1 text-nowrap  " >{service.name}</span>
             {/each}
-        </a>
-        <ArrowUpRight class='size-[13px]' />
     </div>
 </div>
+
 

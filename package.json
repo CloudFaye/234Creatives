@@ -45,6 +45,7 @@
 	},
 	"dependencies": {
 		"@notionhq/client": "^2.2.15",
-		"dotenv": "^16.4.7"
+		"dotenv": "^16.4.7",
+		"gsap": "^3.12.7"
 	}
 }

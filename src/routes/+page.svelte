@@ -1,41 +1,92 @@
 <script lang="ts">
     import Creatives from "$lib/components/Creatives.svelte";
-    import { Separator } from "$lib/components/ui/separator";
-    import { fade } from "svelte/transition";
+    import { onMount } from "svelte";
     import type { PageData } from "./$types";
+    import gsap from "gsap";
     
     export let data: PageData;
     let activeImage: string | null = null;
+    let allImages: string[] = [];
+    let currentIndex = 0;
+    let intervalId: NodeJS.Timeout | undefined;
+    let isHovered = false;
+    let imageContainer: HTMLDivElement;
+
+    onMount(() => {
+        allImages = data.pages
+            .flatMap(page => page.worksMedia)
+            .filter(media => media?.external)
+            .map(media => media.external.url);
+
+        startSlideshow();
+
+        return () => {
+            if (intervalId) clearInterval(intervalId);
+        }
+    });
+
+    function animateImage(url: string) {
+        gsap.to(imageContainer, {
+            opacity: 0,
+            duration: 0.3,
+            onComplete: () => {
+                activeImage = url;
+                gsap.to(imageContainer, {
+                    opacity: 1,
+                    duration: 0.3
+                });
+            }
+        });
+    }
+
+    function startSlideshow() {
+        if (intervalId) clearInterval(intervalId);
+        
+        intervalId = setInterval(() => {
+            if (!isHovered) {
+                currentIndex = (currentIndex + 1) % allImages.length;
+                animateImage(allImages[currentIndex]);
+            }
+        }, 3000);
+    }
 
     function handleImageHover(creative: any) {
-        if (creative.worksMedia && creative.worksMedia.length > 0) {
-            const mediaItem = creative.worksMedia[0];
-            // Ensure we're getting the full resolution URL
-            const imageUrl = mediaItem.external?.url?.split('?')[0];
-            console.log('Raw Image URL:', imageUrl);
-            
-            if (imageUrl) {
-                // Add parameters to get full resolution
-                activeImage = `${imageUrl}?table=block&width=2000&cache=v2`;
-            }
+        isHovered = true;
+        const hasImage = creative.worksMedia?.[0]?.external?.url;
+        
+        if (hasImage) {
+            animateImage(creative.worksMedia[0].external.url);
+        } else {
+            // If no image, fade out current image
+            gsap.to(imageContainer, {
+                opacity: 0,
+                duration: 0.3,
+                onComplete: () => {
+                    activeImage = null;
+                }
+            });
+        }
+    }
+
+    function handleMouseLeave() {
+        isHovered = false;
+        if (allImages.length) {
+            animateImage(allImages[currentIndex]);
         }
     }
 </script>
 
-
 <div class="home">
     <div class="home-inner pt-16 grid gap-10 md:grid-rows-1 lg:grid-cols-2">
-        <!-- Fix the image container styling -->
-        <div class="image lg:col-span-1 row-span-1 w-full min-h-[200px]">
+        <div 
+            class="image lg:col-span-1 row-span-1 w-full min-h-[200px]"
+            bind:this={imageContainer}
+        >
             {#if activeImage}
-                <!-- Debug output -->
-                <pre class="text-xs text-white">{activeImage}</pre>
                 <img
-                    transition:fade
                     src={activeImage}
                     alt="Creative work"
-                    class=" w-full h-full object-cover"
-                    on:error={(e) => console.error('Image load error:', e)}
+                    class="w-full h-[250px] lg:h-full md:h-full object-contain"
                 />
             {/if}
         </div>
@@ -43,13 +94,9 @@
             {#each data.pages as creative (creative.id) }
                 <!-- svelte-ignore a11y_no_static_element_interactions -->
                 <div class='py-3  border-b border-zinc-700' on:mouseenter={() => handleImageHover(creative)}
-                    on:mouseleave={() => activeImage = null} >
-                    <Creatives name={creative.name} category={creative.category} portfolio={creative.portfolio} worksMedia={creative.worksMedia}   />
-                    <div class='flex flex-row items-end justify-end w-full gap-2'>
-                        {#each creative.services as service}
-                            <span class=" bg-zinc-500 text-zinc-950 text-[12px] leading-[10px] px-2 py-1  " >{service.name}</span>
-                        {/each}
-                    </div>
+                    on:mouseleave={handleMouseLeave} >
+                    <Creatives name={creative.name} category={creative.category} portfolio={creative.portfolio} worksMedia={creative.worksMedia} services={creative.services}   />
+                    
                 </div>
             {/each}
         </div>
@@ -82,9 +129,13 @@
         visibility: visible;
     }
 
-    .creative > * { transition: linear 500ms; }
+    .creative > * { transition: linear 100ms; }
 
     .creative:hover > * { opacity: 0.4 }
 
     .creative > *:hover { opacity: 1; }
+
+    .image {
+        opacity: 0;
+    }
 </style>

@@ -24,7 +24,7 @@
     );
 
     const navItemClasses = cn(
-        'text-sm font-medium text-zinc-300  transition-colors hover:text-primary',
+        'text-sm font-medium text-zinc-800 lg:text-zinc-300   transition-colors hover:text-zinc-400 lg:hover:animate-bounce ' ,
         navItemClass
     );
 
@@ -142,7 +142,7 @@
                     {href} 
                     class={cn(
                         navItemClasses,
-                        "text-black hover:text-neutral-600 w-full"
+                        "  w-full"
                     )}
                     onclick={() => {
                         isMobileMenuOpen = false;

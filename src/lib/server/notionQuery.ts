@@ -14,31 +14,22 @@ export async function getNotionPages() {
         const pageData = await notion.pages.retrieve({ page_id: page.id });
         const props = pageData.properties;
 
-        // Optimize image URLs by adding size parameters
-        const optimizeImageUrl = (url: string) => {
-            const baseUrl = url.split('?')[0];
-            return `${baseUrl}?table=block&width=800&cache=v2`; // Reduced width, added caching
-        };
-
         // Fetch blocks for each page
         const blocks = await notion.blocks.children.list({
             block_id: page.id,
             page_size: 100
         });
 
-        // Extract image blocks
-        const imageBlocks = blocks.results.filter((block: any) => 
-            block.type === 'image'
-        );
-
-        // Get image URLs from blocks
-        const imageUrls = imageBlocks.map((block: any) => ({
-            type: 'external',
-            name: 'Work Image',
-            external: { 
-                url: block.image.file?.url ? optimizeImageUrl(block.image.file.url) : block.image.external?.url || '' 
-            }
-        }));
+        // Extract image blocks directly without optimization
+        const imageUrls = blocks.results
+            .filter((block: any) => block.type === 'image')
+            .map((block: any) => ({
+                type: 'external',
+                name: 'Work Image',
+                external: { 
+                    url: block.image.file?.url || block.image.external?.url || ''
+                }
+            }));
 
         return {
             id: pageData.id,
