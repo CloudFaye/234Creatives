@@ -36,11 +36,11 @@
         {name}
     </div>
 
-    <div class='text-lime-600 flex items-center col-span-2'>
+    <div class='text-lime-600 text-[12px] flex items-center col-span-2'>
         <p>{category}</p>
     </div>
 
-    <div class='flex cursor-pointer flex-wrap  items-end justify-end gap-2 col-span-2'>
+    <div class='flex cursor-pointer flex-wrap  items-start justify-end gap-2 col-span-2'>
         {#each services as service}
         <span class=" flex flex-col items-center justify-center border-zinc-700 border text-zinc-400 text-[12px] leading-[10px] px-1 py-1 text-nowrap  " >{service.name}</span>
             {/each}
