@@ -98,7 +98,7 @@
             gsap.killTweensOf([imageContainer, nameContainer]);
             gsap.to([imageContainer, nameContainer], {
                 opacity: 0,
-                duration: 0.3,
+                duration: 0.4,
                 onComplete: () => {
                     activeImage = null;
                     activeName = null;
@@ -143,7 +143,7 @@
                     class="name-bubble"
                     bind:this={nameContainer}
                 >
-                    Creative — {activeName}
+                    {activeName}
                 </div>
             {/if}
         </div>
@@ -152,7 +152,7 @@
                 <!-- svelte-ignore a11y_no_static_element_interactions -->
                 <div class='py-3  border-b border-zinc-700' on:mouseenter={() => handleImageHover(creative)}
                     on:mouseleave={handleMouseLeave} >
-                    <Creatives name={creative.name} category={creative.category} portfolio={creative.portfolio} worksMedia={creative.worksMedia} services={creative.services}   />
+                    <Creatives name={creative.name} category={creative.category} portfolio={creative.portfolio} worksMedia={creative.worksMedia}    />
                     
                 </div>
             {/each}
@@ -200,13 +200,13 @@
     .name-bubble {
         position: absolute;
         bottom: 20px;
-        left: 10px;
+        left: 20px;
         background: rgba(255, 255, 255, 0.817);
         color: black;
         padding: 0.3rem 0.8rem;
         border-radius: 24px;
         font-size: 0.75rem;
-        font-weight: 600;
+        font-weight: 400;
         letter-spacing: -0.02em;
         opacity: 0;
         transform: translateY(20px);

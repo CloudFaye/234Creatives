@@ -29,7 +29,7 @@
     );
 
     const logoClasses = cn(
-        'text-[1.5em]  font-bold tracking-normal font-larken',
+        'text-[1.1em]  font-bold tracking-normal font-larken',
         logoClass
     );
 
