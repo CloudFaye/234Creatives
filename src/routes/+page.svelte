@@ -36,7 +36,7 @@ import { browser } from '$app/environment';
         } else {
             localStorage.setItem('lastSeen', now.toString());
 
-            setTimeout(() => showLoader = false, 6000);
+            setTimeout(() => showLoader = false, 5000);
         }
     });
 
@@ -131,13 +131,11 @@ import { browser } from '$app/environment';
 </script>
 
 <div class="home">
-    {#if browser}
-    {#if showLoader} // only enter dom if showLoader is true
-       <div transition:slide={{duration: 60*1000, delay: 0, easing:cubicOut, axis: 'y'}} class="loader">
+    {#if browser && showLoader}
+       <div  class="loader">
             <Square size="38" color="#FF3E00" unit="px" duration="10s" />
             <p class='mx-2'>Getting all the good guys for you</p>
         </div> 
-    {/if}
     {/if}
 
     <div class="home-inner pt-16 grid gap-10 md:grid-rows-1 lg:grid-cols-2">
