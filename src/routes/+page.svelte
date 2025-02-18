@@ -131,7 +131,7 @@ import { browser } from '$app/environment';
 </script>
 
 <div class="home">
-    {#if browser && showLoader}
+    {#if browser}
     {#if showLoader} // only enter dom if showLoader is true
        <div transition:slide={{duration: 1000, delay: 0, easing:cubicOut, axis: 'y'}} class="loader">
             <Square size="38" color="#FF3E00" unit="px" duration="10s" />
