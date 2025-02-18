@@ -8,7 +8,6 @@ export const load: PageServerLoad = async ({  }) => {
     try {
         const data = await getNotionPages();
         console.log('Loaded pages count:', data.pages.length);
-        console.log('Available services:', data.services);
         return data;
     } catch (e) {
         console.error('Load function error:', e);

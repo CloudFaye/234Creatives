@@ -11,7 +11,7 @@ export const actions: Actions = {
             const formData = await request.formData();
 
             // Validate required fields
-            const requiredFields = ['name', 'email', 'portfolio', 'creativeCategory', 'shortBio', 'creativeServices'];
+            const requiredFields = ['name', 'email', 'portfolio', 'creativeCategory', 'creativeServices'];
             for (const field of requiredFields) {
                 if (!formData.get(field)) {
                     return fail(400, {

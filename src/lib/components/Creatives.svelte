@@ -45,6 +45,7 @@
         <span class=" flex flex-col items-center justify-center border-zinc-700 border text-zinc-400 text-[12px] leading-[10px] px-1 py-1 text-nowrap  " >{service.name}</span>
             {/each}
     </div>
+    <p class='hidden'><a href={portfolio}>{portfolio}</a></p>
 </div>
 
 

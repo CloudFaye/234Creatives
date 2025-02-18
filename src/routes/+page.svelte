@@ -1,13 +1,21 @@
 <script lang="ts">
+import { browser } from '$app/environment';
+    import { onMount } from 'svelte';
     import Creatives from "$lib/components/Creatives.svelte";
-    import { fade, fly, scale } from 'svelte/transition';
-    import { backOut, cubicInOut, elasticOut } from 'svelte/easing';
+    import { fade, fly, scale, slide } from 'svelte/transition';
+    import {  cubicInOut, cubicOut, elasticOut } from 'svelte/easing';
     import type { PageData } from "./$types";
     import { onDestroy } from "svelte";
-	import Filters from "$lib/components/Filters.svelte";
+    import {  Square } from 'svelte-loading-spinners';
+   
+
     
     const { data } = $props<{ data: PageData }>();
 
+    // Loader state
+    let showLoader = $state(true);
+    
+    // Existing states
     let activeImage = $state<string | null>(null);
     let activeName = $state<string | null>(null);
     let isHovered = $state(false);
@@ -16,7 +24,23 @@
     let filteredPages = $state(data.pages);
     let selectedServices = $state<string[]>([]);
 
-    // Initialize images
+    onMount(() => {
+        if (!browser) return;
+        
+        const lastSeen = localStorage.getItem('lastSeen');
+        const now = Date.now();
+        const twentyFourHours = 5 * 60 * 60 * 1000; // variable name should be 5hours. change later
+
+        if (lastSeen && now - Number(lastSeen) < twentyFourHours) {
+            showLoader = false;
+        } else {
+            localStorage.setItem('lastSeen', now.toString());
+
+            setTimeout(() => showLoader = false, 6000);
+        }
+    });
+
+    // Rest of existing script remains the same
     $effect(() => {
         allImages = data.pages
             .flatMap((page: { worksMedia: any; }) => page.worksMedia)
@@ -26,7 +50,8 @@
         startSlideshow();
     });
 
-    function findCreativeNameByImage(url: string): string {
+   
+     function findCreativeNameByImage(url: string): string {
         const creative = data.pages.find((page: { worksMedia: any[]; }) => 
             page.worksMedia?.some((media: { external: { url: string; }; }) => media?.external?.url === url)
         );
@@ -106,7 +131,17 @@
 </script>
 
 <div class="home">
+    {#if browser && showLoader}
+    {#if showLoader} // only enter dom if showLoader is true
+       <div transition:slide={{duration: 1000, delay: 0, easing:cubicOut, axis: 'y'}} class="loader">
+            <Square size="38" color="#FF3E00" unit="px" duration="10s" />
+            <p class='mx-2'>Getting all the good guys for you</p>
+        </div> 
+    {/if}
+    {/if}
+
     <div class="home-inner pt-16 grid gap-10 md:grid-rows-1 lg:grid-cols-2">
+        <!-- Existing layout content remains identical -->
         <div class="image-container relative lg:col-span-1 row-span-1 w-full min-h-[200px]">
             {#key activeImage}
                 {#if activeImage}
@@ -123,8 +158,7 @@
                     </div>
                 {/if}
             {/key}
-            
-            {#key activeName}
+                {#key activeName}
                 {#if activeName && activeImage}
                     <div 
                         class="name-bubble"
@@ -138,9 +172,7 @@
         </div>
 
         <div class="creative row-span-2 h-full overflow-y-scroll flex flex-col lg:col-span-1">
-          
-            
-            {#each filteredPages as creative (creative.id)}
+             {#each filteredPages as creative (creative.id)}
                 <!-- svelte-ignore a11y_no_static_element_interactions -->
                 <!-- svelte-ignore event_directive_deprecated -->
                 <div 
@@ -153,6 +185,7 @@
                         category={creative.category} 
                         portfolio={creative.portfolio} 
                         worksMedia={creative.worksMedia}
+                        
                     />
                 </div>
             {/each}
@@ -161,7 +194,28 @@
 </div>
 
 <style lang="postcss">
-    .home-inner {
+    /* Add loader styles */
+    .loader {
+        position: fixed;
+        top: -10px;
+        left: 0;
+        width: 100%;
+        height: calc(100% + 50px);
+        background: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        background-color: #0c0c0c;
+    }
+
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+      .home-inner {
         height: 100%;
         opacity: 1;
         position: relative;
